@@ -1,0 +1,1 @@
+Library implementing various data structures in Javascript. Decomposed into AMD modules. Can be used as individual pieces, or all in one piece.
