@@ -7,7 +7,7 @@ var A = new Heap("v");
 // console.log(A.isLess({v: 12}, {v: 13}))
 // console.log(A.isLess({v: 13}, {v: 12}))
 var now = new Date();
-N = 3e5;
+N = 1e6;
 for (var i=0; i<N; i++) {
     var val = Math.floor(Math.random() * 30)
     // console.log("Inserting: ", val);
