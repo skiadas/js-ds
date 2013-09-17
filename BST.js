@@ -33,26 +33,29 @@ define(function(require) {
         return node.value;
     }
     function _delete(node, key) {
-        var comp, side, otherSide, prev, parent;
+        var comp, side, otherSide, newBase;
+        var removeLast = function(nd) {
+            if (nd[side] == null) {
+                newBase = nd;
+                return nd[otherSide];
+            }
+            nd[side] = removeLast(nd[side]);
+            return nd.fixSize();
+        }
         if (node == null) { return node; }
         comp = this.compare(key, node.key);
         if (comp === 0) {
             if (node.left == null) { return node.right; }
             if (node.right == null) { return node.left; }
             side = (Math.random() < 0.5) ? 'left' : 'right';
-            otherSide = (side == 'left') ? 'right' : 'left';
+            otherSide = (side === 'left') ? 'right' : 'left';
             // Replacing node with its predecessor
-            prev = node[otherSide];
-            if (prev[side] != null) {
-                while (prev[side] != null) {
-                    parent = prev;
-                    prev = prev[side];
-                }
-                parent[side] = null;
-                parent.size--;
-            }
-            prev[otherSide] = node[otherSide];
-            return prev.fixSize();
+            node[otherSide] = removeLast(node[otherSide]);
+            newBase.left = node.left;
+            newBase.right = node.right;
+            // Uncheck if you find it leaks memory
+            // node.left = node.right = null; 
+            return newBase.fixSize();
         }
         side = (comp < 0) ? 'left' : 'right';
         node[side] = _delete.call(this, node[side], key);
