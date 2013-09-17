@@ -10,6 +10,7 @@ describe("Binary Search Trees", function() {
     })
     it("should start empty", function() {
         expect(t.size()).to.equal(0);
+        expect(t.depth()).to.equal(0);
     });
     it("should insert elements on 'put' and return them with 'get'", function() {
         var key = Math.random(),
@@ -17,12 +18,14 @@ describe("Binary Search Trees", function() {
         t.put(key, val);
         expect(t.get(key)).to.equal(val);
         expect(t.get(key + 1) == null).to.be.true;
+        expect(t.isBST()).to.be.true;
     });
     it("increase size with each new element", function() {
        var N = 100;
         for (var i = 1; i < N; i++) {
             t.put(Math.random(), "foo");
             expect(t.size()).to.equal(i);
+            expect(t.isBST()).to.be.true;
         }
     });
     describe("deletion", function() {
@@ -119,6 +122,9 @@ describe("Binary Search Trees", function() {
                 expect(keys[i]).to.be.above(keys[i-1]);
             }
         });
+        it("and works on empty trees", function() {
+            expect(t.keys().length).to.equal(0);
+        });
         it("or using 'forEach' with a callback", function() {
             var N = 1000, prev = -Infinity, i, counter = 0;
             function callback(value, key) {
@@ -133,27 +139,25 @@ describe("Binary Search Trees", function() {
         });
     })
     describe("support order methods", function() {
-        it("min and max", function() {
-            var N = 100, A = [];
-             for (var i = 1; i < N; i++) {
-                 A.push(Math.random());
-                 t.put(A[i-1], "foo");
-             }
-             expect(t.min()).to.equal(A.reduce(function (p, v) { return( p < v ? p : v ); }));
-             expect(t.max()).to.equal(A.reduce(function (p, v) { return( p > v ? p : v ); }));
-        });
-        it("floor and ceil", function() {
-            var N = 100, A = [];
+        var N = 100, A;
+        beforeEach(function() {
+            A = [];
             for (var i = 0; i < N; i++) {
                 A.push(Math.random());
                 t.put(A[i], "foo");
             }
+        });
+        it("min and max", function() {
+            expect(t.min()).to.equal(A.reduce(function (p, v) { return( p < v ? p : v ); }));
+            expect(t.max()).to.equal(A.reduce(function (p, v) { return( p > v ? p : v ); }));
+        });
+        it("floor and ceil", function() {
             for (var i = 0; i < N; i++) {
                 expect(t.floor(A[i])).to.equal(A[i]);
                 expect(t.ceil(A[i])).to.equal(A[i]);
-                expect(t.floor(A[i] + 0.000001)).to.equal(A[i]);
+                expect(t.floor(A[i] + 0.0000001)).to.equal(A[i]);
                 expect(t.ceil(A[i] - 0.0000001)).to.equal(A[i]);
-                expect(t.floor(A[i] - 0.000001)).not.to.equal(A[i]);
+                expect(t.floor(A[i] - 0.0000001)).not.to.equal(A[i]);
                 expect(t.ceil(A[i] + 0.0000001)).not.to.equal(A[i]);
             }
             A.sort();
@@ -162,5 +166,21 @@ describe("Binary Search Trees", function() {
                 expect(t.ceil(A[i-1] + 0.0000001)).to.equal(A[i]);
             }
         });
+        it("select and rank", function() {
+            A.sort();
+            for (var i = 0; i < N; i++) {
+                expect(t.select(i + 1)).to.equal(A[i]);
+                expect(t.rank(A[i])).to.equal(i + 1);
+                expect(t.rank(A[i] + 0.0000001)).to.equal(i + 1);
+                expect(t.rank(A[i] - 0.0000001)).to.equal(i);
+            }
+            expect(t.rank(A[0] - 1)).to.equal(0);
+            expect(t.rank(A[N-1] + 1)).to.equal(t.size());
+        });
+    });
+    it("have a 'depth' function", function() {
+        expect(t.put(23).depth()).to.equal(1);
+        expect(t.put(14).put(45).depth()).to.equal(2);
+        expect(t.put(6).depth()).to.equal(3);
     });
 });
