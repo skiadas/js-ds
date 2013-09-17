@@ -7,6 +7,8 @@
 //
 (function(define){ 'use strict';
 define(function(require) {
+    
+    function noop() { }
 
     function basic_compare(a, b) {
         if (a < b) { return -1; }
@@ -15,7 +17,7 @@ define(function(require) {
     }
 
     function _put(node, key, value) {
-        if (node == null) { return new Node(key ,value); }
+        if (node == Null) { return new Node(key ,value); }
         var comp = this.compare(key, node.key);
         if (comp === 0) {
             node.value = value;
@@ -26,57 +28,58 @@ define(function(require) {
         return node.fixSize();
     }
     function _get(node, key) {
-        if (node == null) { return undefined; }
+        if (node == Null) { return undefined; }
         var comp = this.compare(key, node.key);
         if (comp < 0) return _get.call(this, node.left, key);
         if (comp > 0) return _get.call(this, node.right, key);
         return node.value;
     }
     function _delete(node, key) {
-        var comp, side, otherSide, newBase;
+        var comp, side, otherSide;
         var removeLast = function(nd) {
-            if (nd[side] == null) {
-                newBase = nd;
+            if (nd[side] == Null) {
+                // nd.left = node.left;
+                // nd.right = node.right;
+                node.size--;
+                node.key = nd.key;
+                node.value = nd.value;
                 return nd[otherSide];
             }
             nd[side] = removeLast(nd[side]);
             return nd.fixSize();
         }
-        if (node == null) { return node; }
+        if (node == Null) { return node; }
         comp = this.compare(key, node.key);
         if (comp === 0) {
-            if (node.left == null) { return node.right; }
-            if (node.right == null) { return node.left; }
+            if (node.left == Null) { return node.right; }
+            if (node.right == Null) { return node.left; }
             side = (Math.random() < 0.5) ? 'left' : 'right';
             otherSide = (side === 'left') ? 'right' : 'left';
             // Replacing node with its predecessor
             node[otherSide] = removeLast(node[otherSide]);
-            newBase.left = node.left;
-            newBase.right = node.right;
             // Uncheck if you find it leaks memory
-            // node.left = node.right = null; 
-            return newBase.fixSize();
+            return node;
         }
         side = (comp < 0) ? 'left' : 'right';
         node[side] = _delete.call(this, node[side], key);
         return node.fixSize();
     }
     function _floor(node, key) {
-        if (node == null) { return undefined; }
+        if (node == Null) { return undefined; }
         var comp = this.compare(key, node.key);
         if (comp == 0) { return key; }
         if (comp < 0) { return _floor.call(this, node.left, key); }
         return _floor.call(this, node.right, key) || node.key;
     }
     function _ceil(node, key) {
-        if (node == null) { return undefined; }
+        if (node == Null) { return undefined; }
         var comp = this.compare(key, node.key);
         if (comp == 0) { return key; }
         if (comp > 0) { return _ceil.call(this, node.right, key); }
         return _ceil.call(this, node.left, key) || node.key;
     }
     function _keys(node, from, to, fill) {
-        if (node == null) { return fill; }
+        if (node == Null) { return fill; }
         var comp1 = this.compare(from, node.key),
             comp2 = this.compare(node.key, to);
         if (comp1 <= 0) {
@@ -87,7 +90,7 @@ define(function(require) {
         return fill;
     }
     function _forEach(node, from, to, fun) {
-        if (node == null) { return; }
+        if (node == Null) { return; }
         var comp1 = this.compare(from, node.key),
             comp2 = this.compare(node.key, to);
         if (comp1 <= 0) {
@@ -101,8 +104,8 @@ define(function(require) {
     function Node(key, value) {
         this.key = key;
         this.value = value;
-        this.left = null;
-        this.right = null;
+        this.left = Null;
+        this.right = Null;
         this.size = 1;
     }
     
@@ -114,8 +117,14 @@ define(function(require) {
         }
     }
 
+    var Null = Node.Null = {
+        size: 0,
+        fixSize: noop,
+        // TODO
+    }
+    
     function BST(compare) {
-        this.root = null;
+        this.root = Null;
         this.compare = compare || basic_compare;
     }
 
@@ -130,15 +139,15 @@ define(function(require) {
             return this;
         },
         min: function() {
-            if (this.root == null) { return undefined; }
+            if (this.root == Null) { return undefined; }
             var node = this.root;
-            while (node.left != null) { node = node.left; }
+            while (node.left != Null) { node = node.left; }
             return node.key;
         },
         max: function() {
-            if (this.root == null) { return undefined; }
+            if (this.root == Null) { return undefined; }
             var node = this.root;
-            while (node.right != null) { node = node.right; }
+            while (node.right != Null) { node = node.right; }
             return node.key;
         },
         floor: function(key) { return _floor.call(this, this.root, key); },
@@ -150,8 +159,8 @@ define(function(require) {
             // The key with rank int
         },
         has: function(key) { return this.get(key) !== undefined; },
-        isEmpty: function() { return this.root === null; },
-        size: function() { return this.root === null ? 0 : this.root.size; },
+        isEmpty: function() { return this.root === Null; },
+        size: function() { return this.root === Null ? 0 : this.root.size; },
         forEach: function(from, to, fun) {
             if (typeof from === 'function') {
                 fun = from;
