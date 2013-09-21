@@ -25,6 +25,7 @@ define(function(require) {
     }
     
     Node.prototype = {
+        isNull: function() { return false; },
         fixSize: function() {
             this.size = this.left.size + this.right.size + 1;
             return this;
@@ -46,7 +47,7 @@ define(function(require) {
             // Helper used by delete
             // Removes the last item on the appropriate side from nd
             // Places that item's entries in 'this'
-            if (nd[side] == Null) {
+            if (nd[side].isNull()) {
                 this.size--;
                 this.key = nd.key;
                 this.value = nd.value;
@@ -60,8 +61,8 @@ define(function(require) {
             // if (node == Null) { return node; }
             comp = compare(key, this.key);
             if (comp === 0) {
-                if (this.left == Null) { return this.right; }
-                if (this.right == Null) { return this.left; }
+                if (this.left.isNull()) { return this.right; }
+                if (this.right.isNull()) { return this.left; }
                 side = (Math.random() < 0.5) ? 'left' : 'right';
                 otherSide = (side === 'left') ? 'right' : 'left';
                 this[otherSide] = this._removeLast(this[otherSide], side, otherSide);
@@ -72,10 +73,10 @@ define(function(require) {
             return this.fixSize();
         },
         min: function(compare) {
-            return (this.left === Null) ? this.key : this.left.min(compare);
+            return (this.left.isNull()) ? this.key : this.left.min(compare);
         },
         max: function(compare) {
-            return (this.right === Null) ? this.key : this.right.max(compare);
+            return (this.right.isNull()) ? this.key : this.right.max(compare);
         },
         floor: function(key, compare) {
             var comp = compare(key, this.key);
@@ -119,8 +120,8 @@ define(function(require) {
         },
         isBST: function(compare) {
             return this.left.isBST(compare) && this.right.isBST(compare) &&
-                (this.left == Null || this.left.max(compare) < this.key) &&
-                (this.right == Null || this.right.min(compare) > this.key);
+                (this.left.isNull() || this.left.max(compare) < this.key) &&
+                (this.right.isNull() || this.right.min(compare) > this.key);
         },
         depth: function() {
             return Math.max(this.left.depth(), this.right.depth()) + 1;
@@ -128,6 +129,7 @@ define(function(require) {
     }
 
     var Null = Node.Null = {
+        isNull: function() { return true; },
         size: 0,
         fixSize: noop,
         get: noop,
@@ -169,7 +171,7 @@ define(function(require) {
         // Returns the key with rank n
         select: function(n) { return this.root.select(n); },
         has: function(key) { return this.get(key) !== undefined; },
-        isEmpty: function() { return this.root === Null; },
+        isEmpty: function() { return this.root.isNull(); },
         size: function() { return this.root.size; },
         forEach: function(from, to, fun) {
             if (typeof from === 'function') {
