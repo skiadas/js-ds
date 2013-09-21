@@ -125,6 +125,18 @@ define(function(require) {
         },
         depth: function() {
             return Math.max(this.left.depth(), this.right.depth()) + 1;
+        },
+        rotateLeft: function() {
+            var newTop = this.right;
+            this.right = newTop.left;
+            newTop.left = this.fixSize();
+            return newTop.fixSize();
+        },
+        rotateRight: function() {
+            var newTop = this.left;
+            this.left = newTop.right;
+            newTop.right = this.fixSize();
+            return newTop.fixSize();
         }
     }
 
