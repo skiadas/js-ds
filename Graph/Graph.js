@@ -84,6 +84,18 @@ define(function(require) {
                 }
             }
             return T;
+        },
+        shortestDijkstra: function(source) {
+            // Move them into separate files, and have them mixin on Graph.
+        },
+        shortestBellmanFord: function(source) {
+            
+        },
+        allShortestFordWarshall: function() {
+            
+        },
+        allShortestJohnson: function() {
+            
         }
     }
 
