@@ -18,7 +18,7 @@ define(function(require) {
 
     function Node(key, value) {
         this.key = key;
-        this.value = value;
+        this.value = value || null;
         this.left = Null;
         this.right = Null;
         this.size = 1;
@@ -37,7 +37,7 @@ define(function(require) {
         },
         put: function(key, value, compare) {
             var comp = compare(key, this.key);
-            if (comp === 0) { this.value = value; } else {
+            if (comp === 0) { this.value = value || null; } else {
                 var side = (comp < 0) ? 'left' : 'right';
                 this[side] =  this[side].put(key, value, compare);
             }
@@ -73,10 +73,10 @@ define(function(require) {
             return this.fixSize();
         },
         min: function(compare) {
-            return (this.left.isNull()) ? this.key : this.left.min(compare);
+            return (this.left.isNull()) ? this : this.left.min(compare);
         },
         max: function(compare) {
-            return (this.right.isNull()) ? this.key : this.right.max(compare);
+            return (this.right.isNull()) ? this : this.right.max(compare);
         },
         floor: function(key, compare) {
             var comp = compare(key, this.key);
@@ -120,8 +120,8 @@ define(function(require) {
         },
         isBST: function(compare) {
             return this.left.isBST(compare) && this.right.isBST(compare) &&
-                (this.left.isNull() || this.left.max(compare) < this.key) &&
-                (this.right.isNull() || this.right.min(compare) > this.key);
+                (this.left.isNull() || this.left.max(compare).key < this.key) &&
+                (this.right.isNull() || this.right.min(compare).key > this.key);
         },
         depth: function() {
             return Math.max(this.left.depth(), this.right.depth()) + 1;
@@ -143,9 +143,9 @@ define(function(require) {
     var Null = Node.Null = {
         isNull: function() { return true; },
         size: 0,
-        fixSize: noop,
+        fixSize: function() { return this; },
         get: noop,
-        put: function(key, value) { return new Node(key ,value); },
+        put: function(key, value) { return new Node(key, value); },
         min: noop,
         max: noop,
         forEach: noop,
@@ -175,8 +175,8 @@ define(function(require) {
             this.root = this.root.delete(key, this.compare);
             return this;
         },
-        min: function() { return this.root.min(this.compare); },
-        max: function() { return this.root.max(this.compare); },
+        min: function() { var x = this.root.min(this.compare); return x && x.key; },
+        max: function() { var x = this.root.max(this.compare); return x && x.key; },
         floor: function(key) { return this.root.floor(key, this.compare); },
         ceil: function(key) { return this.root.ceil(key, this.compare); },
         rank: function(key) { return this.root.rank(key, this.compare); },
