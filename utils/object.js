@@ -1,3 +1,5 @@
+// Generic utilities for working with objects and class creation
+//
 (function(define){ 'use strict';
 define(function(require) {
 

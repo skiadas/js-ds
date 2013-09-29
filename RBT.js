@@ -9,7 +9,7 @@
 define(function(require) {
 
     var BST = require('./BST.js'),
-        utils = require('./utils.js'),
+        utils = require('./utils/object.js'),
         Null = {},
         BLACK = 1,
         RED = 0;
