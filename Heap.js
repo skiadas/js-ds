@@ -54,9 +54,13 @@ define(function(require) {
         this.canDelete = canDelete || false;
         // Length keeps the number of items in the heap (so 1 off from array)
         this.length = 0;
-        this.isLess = (typeof isLess === 'function') ?
-            isLess :
-            function(a, b) { return a[isLess] < b[isLess]; };
+        this.isLess = (isLess == null) ?
+            function(a, b) { return a < b; } :
+            (
+                (typeof isLess === 'function') ?
+                isLess :
+                function(a, b) { return a[isLess] < b[isLess]; }
+            );
         // The following section provides unique IDs to keep track of object 
         // location in heap. Key used to decorate objects with their location
         // in the heap;
