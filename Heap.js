@@ -90,6 +90,7 @@ define(function(require) {
             }
             return null;
         },
+        size: function() { return this.items.length - 1; },
         deleteObj: function(obj) {
             // Deletes the object, by swapping it with the last entry.
             // Then either bubbles up or down as needed. Returns the deleted element.
@@ -113,7 +114,15 @@ define(function(require) {
             swim.call(this, this.length);
             return this;
         },
-        isEmpty: function() { return this.length === 0; }
+        isEmpty: function() { return this.length === 0; },
+        isHeap: function() {
+            for (var i = this.items.length; i-- > 2;) {
+                if (this.comp(i, Math.floor(i/2))) {
+                    return false;
+                }
+            }
+            return true;
+        }
     }
     
     return Heap;
