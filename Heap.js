@@ -23,7 +23,7 @@ define(function(require) {
                 l = this.length;
             while(j <= l) {
                 if (j < l && this.comp(j + 1, j)) { j++; }
-                if (this.comp(k, j)) { break; }
+                if (!this.comp(j, k)) { break; }
                 swap.call(this, k, j);
                 k = j;
                 j = 2 * k;
@@ -34,7 +34,6 @@ define(function(require) {
         // Fixes up from k.
             var p = floor(k/2);
             while(p > 0) {
-                // console.log(this, k, p);
                 if (this.comp(p, k)) { break; }
                 swap.call(this, p, k);
                 k = p;
@@ -108,7 +107,10 @@ define(function(require) {
             swap.call(this, i, this.length);
             this.removeIndex(this.items[this.length--]);
             this.items.pop();
-            sink.call(this, i);
+            if (i !== this.length + 1) {
+                sink.call(this, i);
+                swim.call(this, i);
+            }
             return obj;
         },
         min: function() { return this.get(1); },
