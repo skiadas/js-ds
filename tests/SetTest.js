@@ -58,4 +58,8 @@ describe("In Set objects", function() {
         var s5 = s.intersection(s2, s3);
         expect(s5.elements().sort()).to.deep.equal([t1]);
     });
+    it("we have a toString method", function() {
+        s.add(2).add(1);
+        expect(s.toString()).to.equal("{1, 2}");
+    });
 });

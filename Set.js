@@ -16,11 +16,10 @@ define(function(require) {
     
     Set.prototype = {
         add: function(k) {
-            this._elements[k.toString()] = k;
+            this._elements[k] = k;
             return this;
         },
         delete: function(k) {
-            k = k.toString();
             var val = this._elements[k];
             delete this._elements[k];
             return val;
@@ -78,11 +77,19 @@ define(function(require) {
             }
             return arr;
         },
+        keys: function() {
+            var arr = [], els = this._elements;
+            for (var k in els) { if (els.hasOwnProperty(k)) { arr.push(k); } }
+            return arr;
+        },
         toString: function() {
-            return '{' + this.elements().join(',') + '}';
+            return '{' + this.keys().sort().join(', ') + '}';
         },
         clone: function() { return new Set(this.elements()); }
     }
+
+    // Aliases
+    Set.prototype.has = Set.prototype.contains;
     
     return Set;
 });
