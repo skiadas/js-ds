@@ -15,6 +15,13 @@ define(function(require) {
     }
     
     DLL.prototype = {
+        isEmpty: function() { return this.size === 0; },
+        first: function() {
+            return this.sentinel.next.item;
+        },
+        last: function() {
+            return this.sentinel.prev.item;
+        },
         addFirst: function(item) {
             return this.insertNode(item, this.sentinel);
         },
