@@ -12,7 +12,12 @@ define(function(require) {
             this.list.addLast(item);
             return this;
         },
+        pushAll: function(arr) {
+            var list = this.list;
+            arr.forEach(function(item) { list.addLast(item); });
+        },
         pop: function() { return this.list.removeLast(); },
+        peek: function() { return this.list.last() },
         isEmpty: function() { return this.list.size === 0; },
         each: function(fun, andPop) {
             var it;
