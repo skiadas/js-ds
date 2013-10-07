@@ -29,6 +29,9 @@ define(function(require) {
                 it = this.pop();
                 fun.call(it, it);
             }
+        },
+        iterator: function() {
+            return this.list.iterator(true);
         }
     }
     

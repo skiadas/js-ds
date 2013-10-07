@@ -1,16 +1,20 @@
-Stack = require('../Stack.js');
-var A = new Stack();
+var chai = require('chai'),
+    expect = chai.expect,
+    Stack = require('../Stack.js');
+chai.Assertion.includeStack = true;
 
-A.push("hi").push("there").push("you")
-console.log(A.list.size)
-A.each(console.log);
-A.each(console.log, true);
-console.log(A.list.size);
-
-var now = new Date();
-N = 1e7;
-for (var i=0; i < N; i++) { A.push("hi there!"); }
-console.log(N + " pushes in " + (new Date() - now) + "ms.");
-now = new Date();
-for (var i=0; i < N; i++) { A.pop(); }
-console.log(N + " pops in " + (new Date() - now) + "ms.");
+describe("Stacks", function() {
+    var t;
+    beforeEach(function(){
+        t = new Stack();
+    });
+    it("have an 'iterator'", function() {
+        t.push(3).push(2).push(1);
+        var it = t.iterator();
+        expect(it.next()).to.equal(1);
+        expect(it.next()).to.equal(2);
+        expect(it.next()).to.equal(3);
+        expect(it.next()).to.equal(null);
+        expect(it.next()).to.equal(null);
+    });
+});

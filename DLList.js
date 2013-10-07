@@ -58,6 +58,17 @@ define(function(require) {
                 it = s;
             while ((it = it.prev) !== s) fun.call(it.item, it.item);
             return this;
+        },
+        iterator: function(reverse) {
+            var sent = this.sentinel,
+                that = sent,
+                dir = (reverse === true) ? 'prev' : 'next';
+            return {
+                next: function next() {
+                    return (that[dir] === sent) ? null : (that = that[dir]).item;
+                },
+                done: function done() { return that[dir] === sent; }
+            }
         }
     }
     
