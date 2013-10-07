@@ -32,6 +32,9 @@ define(function(require) {
         }
     }
     
+    // ALIASES
+    Stack.prototype.forEach = Stack.prototype.each;
+    
     return Stack;
 });
 }(typeof define === 'function' ? define : function(factory) { module.exports = factory(require); }));
