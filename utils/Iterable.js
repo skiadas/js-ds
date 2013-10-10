@@ -9,8 +9,6 @@
 (function(define){ 'use strict';
 define(function(require) {
     
-    var extend = require('./object.js').extend;
-    
     /// REWRITE
     //  As a constructor that accepts either an array or an object with an
     //  iterator method.
