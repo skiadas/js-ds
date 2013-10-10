@@ -94,6 +94,41 @@ define(function(require) {
         }
     }
     
+    // Class methods for constructing standard iterables
+    Iterable.seq = function(start, step) {
+        // When called with one parameter, that parameter is the step
+        if (step == null) { step = start; start = 0; }
+        if (step == null) { step = 1; }
+        start = start - step;
+        return new Iterable(function() {
+            var i = start;
+            return {
+                next: function() { return (start = start + step); },
+                done: function() { return false; }
+            }
+        });
+    }
+    Iterable.repeat = function(val, times) {
+        if (times == null) { times = Infinity; }
+        return new Iterable(function() {
+            var i = 0;
+            return {
+                next: function() { return (i++ >= times) ? null : val; },
+                done: function() { return (i >= times); }
+            }
+        });
+    }
+    Iterable.unif = function(a, b) {
+        if (b == null) { b = a; a = 0; }
+        if (b == null) { b = 1; }
+        return new Iterable(function() {
+            return {
+                next: function() { return a + Math.random() * (b-a); },
+                done: function() { return false; }
+            }
+        });
+    }
+    
     return Iterable;
 });
 }(typeof define === 'function' ? define : function(factory) { module.exports = factory(require); }));

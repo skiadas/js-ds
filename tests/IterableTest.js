@@ -42,4 +42,8 @@ describe("The Iterable mixin", function() {
         expect(A.take(1).toArray()).to.deep.equal([1]);
         expect(A.take(2).toArray()).to.deep.equal([1,4]);
     });
+    it("has 'seq' and 'repeat' constructors", function() {
+        expect(Iterable.seq(1,2).take(3).toArray()).to.deep.equal([1,3,5]);
+        expect(Iterable.repeat(2).take(3).toArray()).to.deep.equal([2,2,2]);
+    });
 });
