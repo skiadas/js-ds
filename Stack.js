@@ -32,7 +32,7 @@ define(function(require) {
         }
     }
     
-    object.extend(Stack.prototype, Iterable.iterable);
+    object.extend(Stack.prototype, Iterable.prototype);
     return Stack;
 });
 }(typeof define === 'function' ? define : function(factory) { module.exports = factory(require); }));
