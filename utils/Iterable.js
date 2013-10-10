@@ -29,6 +29,16 @@ define(function(require) {
                 }
     }
     
+    // Helper functions
+    Iterable.func = {
+        false: function() { return false; },
+        true: function() { return true; },
+        "+": function(a, b) { return a + b; },
+        "-": function(a, b) { return a - b; },
+        "*": function(a, b) { return a * b; },
+        "/": function(a, b) { return a / b; }
+    }
+    
     Iterable.prototype = {
         forEach: function(fun) {
             var it = this.iterator();
@@ -89,6 +99,25 @@ define(function(require) {
                 return {
                     next: function() { return (i++ >= b) ? null : it.next(); },
                     done: function() { return (i >= b) || it.done(); }
+                }
+            });
+        },
+        accumulate: function(fun) {
+            // Accumulates the values at each step, calling fun(accum, newItem)
+            // for each new value
+            fun = Iterable.func[fun] || fun;
+            var that = this;
+            return new Iterable(function() {
+                var it = that.iterator(), acc;
+                return {
+                    next: function() {
+                        return (
+                            acc = (acc == null) ?
+                                it.next() :
+                                fun(acc, it.next())
+                        );
+                    },
+                    done: function() { return it.done(); }
                 }
             });
         }

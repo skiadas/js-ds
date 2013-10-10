@@ -46,4 +46,10 @@ describe("The Iterable mixin", function() {
         expect(Iterable.seq(1,2).take(3).toArray()).to.deep.equal([1,3,5]);
         expect(Iterable.repeat(2).take(3).toArray()).to.deep.equal([2,2,2]);
     });
+    it("has an 'accumulate' method", function() {
+        A = Iterable.seq(1, 2).accumulate(function(acc, next) { return acc + next; });
+        expect(A.take(5).toArray()).to.deep.equal([1,4,9,16,25]);
+        A = Iterable.seq(1, 2).accumulate("+");
+        expect(A.take(5).toArray()).to.deep.equal([1,4,9,16,25]);
+    });
 });
