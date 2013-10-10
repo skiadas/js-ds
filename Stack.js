@@ -1,11 +1,12 @@
 (function(define){ 'use strict';
 define(function(require) {
     
-    var DLL = require('./DLList.js');
+    var DLL = require('./DLList.js'),
+        object = require('./utils/object.js'),
+        Iterable = require('./utils/Iterable.js');
     
-    function Stack() {
-        this.list = new DLL();
-    }
+    
+    function Stack() { this.list = new DLL(); }
     
     Stack.prototype = {
         push: function(item) {
@@ -19,12 +20,8 @@ define(function(require) {
         pop: function() { return this.list.removeLast(); },
         peek: function() { return this.list.last() },
         isEmpty: function() { return this.list.size === 0; },
-        each: function(fun, andPop) {
+        processAll: function(fun) {
             var it;
-            if (!andPop) {
-                this.list.revEach(fun);
-                return this;
-            }
             while (!this.isEmpty()) {
                 it = this.pop();
                 fun.call(it, it);
@@ -35,9 +32,7 @@ define(function(require) {
         }
     }
     
-    // ALIASES
-    Stack.prototype.forEach = Stack.prototype.each;
-    
+    object.extend(Stack.prototype, Iterable.iterable);
     return Stack;
 });
 }(typeof define === 'function' ? define : function(factory) { module.exports = factory(require); }));

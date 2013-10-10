@@ -2,6 +2,9 @@
 (function(define){ 'use strict';
 define(function(require) {
 
+    var object = require('./utils/object.js'),
+        Iterable = require('./utils/Iterable.js');
+
     function Node(item, prev, next) {
         this.item = item;
         this.prev = prev;
@@ -47,7 +50,7 @@ define(function(require) {
             this.size++;
             return this;
         },
-        each: function(fun) {
+        each: function(fun) { // This method will in fact be overwritten by the mixin
             var s = this.sentinel,
                 it = s;
             while ((it = it.next) !== s) fun.call(it.item, it.item);
@@ -71,6 +74,8 @@ define(function(require) {
             }
         }
     }
+    
+    object.extend(DLL.prototype, Iterable.prototype);
     
     return DLL;
 });
